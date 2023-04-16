@@ -44,6 +44,7 @@ class LSystem:
             self.state = self.state.upper()
 
     def draw(self):
+        stack =[]
         for move in self.state:
             if move == "F":
                 self.turtle.forward(self.length)
@@ -51,6 +52,20 @@ class LSystem:
                 self.turtle.left(self.angle)
             elif move == "-":
                 self.turtle.right(self.angle)
+            elif move == "[":
+                stack.append((self.turtle.xcor(),
+                             self.turtle.ycor(),
+                             self.turtle.heading(),
+                             self.turtle.pensize()))
+            elif move == "]":
+                x, y, angle, width = stack.pop()
+                self.turtle.penup()
+                self.turtle.sety(x)
+                self.turtle.sety(y)
+                self.turtle.setheading(angle)
+                self.turtle.pensize(width)
+                self.turtle.pendown()
+                self.width = width
 
         turtle.done()
 
@@ -63,15 +78,11 @@ class LSystem:
 if __name__ == "__main__":
     LSystem.prepear(1500, 900)
 
-#koch = LSystem(axiom='FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f+FF+FF--f',
-#               width=2,
-#               lenght=6,
-#               angle=90,
-#               start_position=(0, 200),
-#               start_angle=(0)
-#
-#koch.add_rules(('F', 'F+F-F+F+F-F-F+F+FF+FF'))
-#koch.generate_path(3)
-#print(koch.state)
-#koch.draw()
+    l_sys = LSystem(axiom='F', width=2,
+                    lenght=5, angle=25,
+                    start_position=(0, 0),
+                    start_angle=90)
 
+    l_sys.add_rules(('F', 'F[+F]F[-F]F'))
+    l_sys.generate_path(4)
+    l_sys.draw()
